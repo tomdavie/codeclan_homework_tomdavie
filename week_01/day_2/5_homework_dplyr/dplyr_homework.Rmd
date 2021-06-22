@@ -77,11 +77,25 @@ Summarise the mean number of calories in each `beverage_category`.  Which 3 cate
 
 ```{r}
 
-starbucks_short %>%
+average_calories_bev_cat <- starbucks_short %>%
 group_by(Beverage_category) %>%
 summarise(Beverage_category, Calorie_count = mean(Calories)) %>%
-arrange(Calorie_count)
+arrange(Calorie_count) 
 
+```
+
+```{r}
+
+no_duplicate_average_calories_bev_cat <- average_calories_bev_cat [!duplicated(average_calories_bev_cat$Beverage_category), ]
+
+```
+
+```{r}
+head(no_duplicate_average_calories_bev_cat, 3)
+```
+
+```{r}
+tail(no_duplicate_average_calories_bev_cat, 3)
 ```
 
 Most Calories - Smoothies, Frappuccino® Blended Coffee, Signature Espresso Drinks
@@ -95,13 +109,18 @@ Let's look at this a different way. What is the average number of calories in ea
 
 ```{r}
 
-starbucks_short %>%
+average_calories_bev_prep <- starbucks_short %>%
 group_by(Beverage_prep) %>%
 mutate(Calories = mean(Calories)) %>%
 arrange(Calories)
 
 ```
 
+```{r}
+
+no_duplicate_average_calories_bev_prep <- average_calories_bev_prep [!duplicated(average_calories_bev_prep$Beverage_prep), ]
+
+```
 
 **Question 6.**
 
