@@ -79,14 +79,8 @@ Summarise the mean number of calories in each `beverage_category`.  Which 3 cate
 
 average_calories_bev_cat <- starbucks_short %>%
 group_by(Beverage_category) %>%
-summarise(Beverage_category, Calorie_count = mean(Calories)) %>%
+summarise(Calorie_count = mean(Calories)) %>%
 arrange(Calorie_count) 
-
-```
-
-```{r}
-
-no_duplicate_average_calories_bev_cat <- average_calories_bev_cat [!duplicated(average_calories_bev_cat$Beverage_category), ]
 
 ```
 
@@ -111,16 +105,11 @@ Let's look at this a different way. What is the average number of calories in ea
 
 average_calories_bev_prep <- starbucks_short %>%
 group_by(Beverage_prep) %>%
-mutate(Calories = mean(Calories)) %>%
+summarise(Calories = mean(Calories)) %>%
 arrange(Calories)
 
 ```
 
-```{r}
-
-no_duplicate_average_calories_bev_prep <- average_calories_bev_prep [!duplicated(average_calories_bev_prep$Beverage_prep), ]
-
-```
 
 **Question 6.**
 
@@ -151,7 +140,7 @@ Which is the best type of **coffee** drink to get if you're worried about consum
 
 ```{r}
 
-lowest_cal_coffee_drink <- filter(starbucks_short, Beverage == "Coffee" | Beverage_category == "Coffee") %>%
+lowest_cal_coffee_drink <- filter(starbucks_short, Beverage == "Coffee" | Beverage == "Espresso" | Beverage == "Latte"| Beverage_category == "Coffee" | Beverage_category == "Latte" ) %>%
   arrange(Calories) %>%
   head(1)
 
