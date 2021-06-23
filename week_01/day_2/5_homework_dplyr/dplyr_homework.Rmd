@@ -129,13 +129,35 @@ Which `Beverage_prep` type contains more than the average calories of all drinks
 <summary>**Hint**</summary>: to answer this, you'll have to first figure out what the average calories across all drinks are, and then use that as a filter for the grouped `Beverage_prep` data.
 </details>
 
-<br>
+```{r}
+
+average_cal_all_drink <- mutate(starbucks_short, Calories = mean(Calories)) %>%
+  head(1) %>%
+  pull()
+
+```
+
+```{r}
+
+Beverage_prep_above_average <- mutate(no_duplicate_average_calories_bev_prep, Calories = Calories - average_cal_all_drink) %>%
+  filter(Calories > 0)
+
+```
+
 
 **Question 7.**
 
 Which is the best type of **coffee** drink to get if you're worried about consuming too many calories? 
 
-<br>
+```{r}
+
+lowest_cal_coffee_drink <- filter(starbucks_short, Beverage == "Coffee" | Beverage_category == "Coffee") %>%
+  arrange(Calories) %>%
+  head(1)
+
+```
+
+  
 
 
 
