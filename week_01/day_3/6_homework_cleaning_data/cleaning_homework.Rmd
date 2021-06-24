@@ -172,11 +172,37 @@ Save this into a new variable called `movie_budgets`.
 <summary>**Hint:**</summary> 1e6 is a shorthand way of writing 1 million ($1 \times 10^6$)
 </details>
 
+```{r}
+
+movie_budgets <- movies_imputed %>% 
+  mutate(
+    budget_type = case_when(
+      budget < 1.2e6 ~ "Small budget",
+      budget > 4e7 ~ "Big budget",
+      TRUE ~ "Medium Budget"
+    )
+  )
+# Was trying to use:
+#         budget >= 1.2e6 & <= 4e7 ~ "Medium Budget",
+# but wouldn't accept. Unsure the correct way of coding. 
+```
+
 <br> 
 
 **Question 2.**  
 
 Take the original dataset with all the variables. Using `across` and `where`, summarise the number of missing values, first across all columns of type `character`, and then across all columns of type `numeric`.
+
+```{r}
+#Run out of time on this - could do with going over 'across' and 'where' 
+movies %>% 
+    summarise(across(where(is.character), is.na))
+```
+
+```{r}
+movies %>% 
+    summarise(across(where(is.numeric), is.na))
+```
 
 <br> 
 
