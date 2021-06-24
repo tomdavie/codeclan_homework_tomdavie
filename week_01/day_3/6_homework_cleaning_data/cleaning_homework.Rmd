@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <br>
 In this homework you are going to use a dataset about movies from [Kaggle](https://www.kaggle.com/tmdb/tmdb-movie-metadata).
 
-Copy over the data to your homework directory and read it in. Remember to load any packages you will be using.
+Copy over the data to your homework directory and read it in. Remember to load any packages you will be using.   
 
 # MVP
 <br>
@@ -36,7 +36,6 @@ dim(movies)
 
 # Look for NAs and figure the best way of replacing those.
 # Use the janitor package and clean_names() if necessary
-# 
 
 ```
 
@@ -181,7 +180,7 @@ movie_budgets <- movies_imputed %>%
       budget > 4e7 ~ "Big budget",
       TRUE ~ "Medium Budget"
     )
-  )
+  )  
 # Was trying to use:
 #         budget >= 1.2e6 & <= 4e7 ~ "Medium Budget",
 # but wouldn't accept. Unsure the correct way of coding. 
@@ -189,7 +188,7 @@ movie_budgets <- movies_imputed %>%
 
 <br> 
 
-**Question 2.**  
+**Question 2.** 
 
 Take the original dataset with all the variables. Using `across` and `where`, summarise the number of missing values, first across all columns of type `character`, and then across all columns of type `numeric`.
 
