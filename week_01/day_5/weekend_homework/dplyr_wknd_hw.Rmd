@@ -1,0 +1,197 @@
+---
+title: "`dplyr` Weekend Homework"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    css: ../../../styles.css
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+```
+<br>
+
+
+
+As this is your first weekend homework, here are some tips: 
+
+* Try to schedule some time in your weekend to work on the homework so it's not suddenly Monday morning and you haven't gotten started yet (it happens).
+* Remember that the weekend homework is for your learning, so try to use it as an opportunity to apply and consolidate everything you've learned in the week.
+* Also use it as an opportunity to spend a bit more time making your code readable and reproducible, by practising commenting and writing some text around your steps and findings. You will thank yourself later! 
+  * This will be especially useful for this specific weekend homework as it's very open-ended and you will eventually forget your own thought process
+* A bit obvious, but don't spend your entire weekend working on the homework! Remember to spend time doing things you enjoy and rest up ahead of the following week.
+
+The data for this weekend homework is scraped from Goodreads (a website all about books) and made publicly available on Kaggle. You can read more about the data [here](https://www.kaggle.com/jealousleopard/goodreadsbooks).
+
+# MVP
+
+### First steps
+
+Load necessary packages and read in `books.csv`. Investigate dimensions, variables, missing values - you know the drill!
+
+### Up to you
+
+Now it's up to you... For this weekend homework there will be no specific tasks, just you and this dataset! Using everything you've learned this week, try to describe/summarise at least 5 things about this dataset - using R and the tidyverse of course! Feel free to find and use new functions if there is something that the tidyverse doesn't offer, but do try to use this homework to apply what you have learned this week. Be prepared to share one of your findings on Monday!
+
+### Remember
+
+Before you submit, go through your weekend homework and make sure your code is following best practices as laid out in the `coding_best_practice` lesson.
+
+```{r}
+# quote - "" to disable quoting 
+# col_types - two columns couldn't be read as 'double' due to some cells containing characters so had to make the column type 'character' to read them in.
+
+library(tidyverse)
+books <- read_csv("data/books.csv", 
+                  quote = "",
+                  col_types = cols(average_rating = col_character(),
+                      num_pages = col_character()))
+
+# 4 rows have 1 too many columns due to commas in cells. Unsure how to merge two cells so removed these rows instead.  
+books_clean <- books[-c(3349, 4703, 5878, 8980), ]
+```
+
+```{r}
+# after removing the 4 issue rows, I can now change these two columns back to double.
+books_clean$average_rating <- as.double(as.character(books_clean$average_rating))
+books_clean$num_pages <- as.double(as.character(books_clean$num_pages))
+
+sapply(books_clean, class)
+```
+
+```{r}
+# clean up column names
+
+books_clean <- books_clean %>% 
+  janitor::clean_names()
+
+```
+
+```{r}
+# removing columns that aren't of use
+books_clean <- books_clean %>% 
+select(-book_id,-isbn,-isbn13)
+
+```
+
+```{r}
+# removing duplicate titles
+books_clean <- books_clean %>% 
+  distinct(title, .keep_all = TRUE)
+
+```
+
+
+```{r}
+# Turn language_code into language. Renaming column and variables. 
+
+books_clean <- books_clean %>% 
+  rename(language = language_code) %>% 
+  mutate(
+    language = recode(language, 
+                           "eng"   = "English", 
+                           "en-US" = "English",
+                           "fre"   = "French",
+                           "spa"   = "Spanish",
+                           "en-GB" = "English",
+                           "mul"   = "Multiple",
+                           "grc"   = "Greek",
+                           "enm"   = "Old English",
+                           "en-CA" = "English",
+                           "ger"   = "German",
+                           "jpn"   = "Japan",
+                           "ara"   = "Arabic",
+                           "nl"    = "Dutch",
+                           "zho"   = "Chinese",
+                           "lat"   = "Latin",
+                           "por"   = "Portguese",
+                           "srp"   = "Serbian",
+                           "ita"   = "Italian",
+                           "rsa"   = "Russian",
+                           "msa"   = "Malay",
+                           "glg"   = "Galican",
+                           "wel"   = "Welish",
+                           "swe"   = "Sweden",
+                           "nor"   = "Norwegian",
+                           "tur"   = "Turkish",
+                           "gla"   = "Gaelic",
+                           "ale"   = "Aleut"
+                         )) 
+
+```
+
+```{r}
+# Created a table showing how many books there are in each language
+
+number_of_books_per_language <- books_clean %>% 
+  group_by(Language = language) %>% 
+  summarise(Book_Count = n()) %>% 
+  arrange(desc(Book_Count))
+
+```
+
+```{r}
+
+# removing any secondary authors
+removed_secondary_authors <- books_clean %>%
+  mutate(authors = gsub("/.*", "", authors)) 
+
+```
+
+```{r}
+# Created a table of Highest Rated Authors (with over 100 ratings to remove outliers)
+highest_rated_authors <- removed_secondary_authors %>% 
+  filter(ratings_count > 100) %>% 
+  group_by(authors) %>% 
+  summarise(average_rating = mean(average_rating)) %>% 
+  arrange(desc(average_rating))
+
+```
+
+```{r}
+# Created a table of Top 10 Rated Authors (with over 100 ratings to remove outliers)
+top_10_rated_authors <- removed_secondary_authors %>% 
+  filter(ratings_count > 100) %>% 
+  group_by(authors) %>% 
+  summarise(average_rating = mean(average_rating)) %>% 
+  slice_max(average_rating, n = 10)
+
+```
+
+```{r}
+# Highest Rated Publisher 
+
+highest_rated_pulisher <- books_clean %>% 
+  filter(ratings_count > 100) %>% 
+  group_by(publisher) %>% 
+  summarise(average_rating = mean(average_rating)) %>% 
+  arrange(desc(average_rating))
+
+```
+
+```{r}
+# Created book length category column 
+
+book_length_categorised <- books_clean %>% 
+  mutate(
+    book_length = case_when(
+      num_pages < 200  ~ "Short",
+      num_pages < 500  ~ "Medium",
+      num_pages >= 500 ~ "Long"
+    )
+  )
+
+```
+
+```{r}
+# Creating an average reading time column based on an average reading speed of 275 wpm and average words on a page of 250 wpp.
+# 250wpp / 275 wpm = 0.91 ppm / 60 = 0.015 pph
+
+average_time_to_read <- books_clean %>% 
+  mutate(average_reading_time = num_pages *0.015,
+  average_reading_time_in_hours = round(average_reading_time, digits = 1))
+
+```
