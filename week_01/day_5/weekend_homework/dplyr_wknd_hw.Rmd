@@ -190,8 +190,20 @@ book_length_categorised <- books_clean %>%
 # Creating an average reading time column based on an average reading speed of 275 wpm and average words on a page of 250 wpp.
 # 250wpp / 275 wpm = 0.91 ppm / 60 = 0.015 pph
 
-average_time_to_read <- books_clean %>% 
-  mutate(average_reading_time = num_pages *0.015,
-  average_reading_time_in_hours = round(average_reading_time, digits = 1))
+average_time_to_read <- book_length_categorised %>% 
+  mutate(average_reading_time_in_hours = num_pages *0.015,
+  average_reading_time_in_hours = round(average_reading_time_in_hours, digits = 1))
+
+```
+
+```{r}
+# 10 Worst Rated Author of 2005
+
+average_time_to_read %>% 
+  as.Date(publication_date, format = "%m/%d/%Y") %>% 
+  filter(between(publication_date, as.Date("2005-01-01"), as.Date("2005-31-12"))) %>% 
+  group_by(authors) %>% 
+  mutate(average_rating = mean(ratings_count)) %>% 
+  slice_min(average_rating, n = 10)
 
 ```
