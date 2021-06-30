@@ -156,19 +156,33 @@ whole_text %>%
 
 ```{r}
 
-pattern <- "[Bb]ig [Bb]rother"
+pattern <- "[Bb][Ii][Gg] [Bb][Rr][Oo][Tt][Hh][Ee][Rr]"
 
 whole_text %>% 
   str_extract_all(pattern) %>% 
-  lengths()
+  flatten_chr %>% 
+  length()
 
 ```
+
+```{r}
+
+pattern <- regex("big brother", ignore_case = TRUE)
+
+whole_text %>% 
+  str_extract_all(pattern) %>% 
+  flatten_chr %>% 
+  length()
+
+```
+
+
 
 3. The chapter is written from the point of view of the protagonist, Winston. Does he ever mention the other main character (Julia) by name?
 
 ```{r}
 
-pattern <-  "Julia"
+pattern <-  "[Jj]ulia"
 
 whole_text %>% 
   str_detect(pattern)
@@ -187,6 +201,16 @@ whole_text %>%
 
 ```
 
+```{r}
+
+pattern <- "[A-Z][a-z]+ [0-9]+(th|rd|st|nd),[\\s][0-9]{4}"
+
+whole_text %>% 
+  str_extract_all(pattern)
+
+```
+
+
 5. Winston wants some anonymity, redact his name somehow.
 
 ```{r}
@@ -204,26 +228,24 @@ whole_text %>%
 ```{r}
 
 whole_text %>% 
-  str_extract_all("[Gg]in")
+  str_extract_all("[ ,\\.-][Gg][Ii][Nn][ ,\\.-]")
 
 ```
 
 
 ```{r}
 
-pattern_lc <- "gin"
-pattern_uc <- "Gin"
-
 whole_text_vodka <- whole_text %>% 
-str_replace_all(pattern_lc, "vodka") %>% 
-str_replace_all(pattern_uc, "Vodka")
+  str_replace_all("gin", "vodka") %>% 
+  str_replace_all("Gin", "Vodka") %>% 
+  str_replace_all("GIN", "VODKA")
 
 ```
 
 ```{r}
 
 whole_text_vodka %>% 
-  str_extract_all("[Vv]odka")
+  str_extract_all("[Vv][Oo][Dd][Kk][Aa]")
 
 ```
 
