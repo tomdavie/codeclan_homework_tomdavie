@@ -114,8 +114,8 @@ SELECT
 	first_name,
 	last_name,
 	fte_hours,
-	CONCAT(fte_hours * salary) 
-	AS effective_yearly_salary
+	salary,
+	fte_hours * salary AS effective_yearly_salary
 FROM employees; 
 
 /* EXTENSION */
@@ -139,13 +139,15 @@ SELECT
 	last_name,
 	department,
 	start_date,
-	CONCAT(first_name, ' ', last_name, ' - ', department, ' (joined ', TO_CHAR(start_date, 'FMMonth FMYYYY'), ')') 
-	AS badge_label_date
+	CONCAT(
+		first_name, ' ', last_name, ' - ', department, ' (joined ', TO_CHAR(start_date, 'FMMonth FMYYYY'), ')'
+	)		AS badge_label_date
 FROM employees
-WHERE first_name IS NOT NULL 
-AND last_name IS NOT NULL
-AND department IS NOT NULL
-AND start_date IS NOT NULL;
+WHERE 
+	first_name IS NOT NULL 
+	AND last_name IS NOT NULL
+	AND department IS NOT NULL
+	AND start_date IS NOT NULL;
 
 /* 18 */
 
@@ -153,9 +155,9 @@ SELECT
 	first_name,
 	last_name,
 	salary,
-CASE 
-	WHEN salary IS NULL THEN 'NA'
-	WHEN salary < 40000 THEN 'low' 
-	WHEN salary >= 40000 THEN 'high'
-END AS salary_class
+	CASE 
+		WHEN salary IS NULL THEN NULL
+		WHEN salary < 40000 THEN 'low' 
+		WHEN salary >= 40000 THEN 'high'
+	END AS salary_class
 FROM employees;
