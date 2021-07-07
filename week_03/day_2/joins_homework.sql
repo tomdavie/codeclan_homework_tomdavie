@@ -112,4 +112,23 @@ ORDER BY total_day_charge;
 --Extension
 
 --Q5
+
+SELECT DISTINCT
+	employee_id,
+	COUNT(committee_id) AS no_committees
+FROM employees_committees
+GROUP BY employee_id
+HAVING employee_id >= 1;
+
 --Q6
+
+SELECT DISTINCT
+	COUNT(e.id) AS num_employees_,
+	ec.employee_id,
+	ec.committee_id 
+FROM employees AS e FULL OUTER JOIN employees_committees as ec 
+	ON e.id = ec.employee_id 
+GROUP BY ec.employee_id, ec.committee_id 
+HAVING ec.committee_id IS NULL
+
+	
