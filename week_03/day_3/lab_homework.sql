@@ -1,7 +1,8 @@
 --MVP
 --Q1
 
-SELECT *
+SELECT 
+	COUNT(id) AS num_pay_details_no_local_acct_iban
 FROM pay_details
 WHERE local_account_no IS NULL
 AND iban IS NULL
@@ -130,11 +131,6 @@ HAVING COUNT(id) >= 2
 ORDER BY no_name DESC, department ASC
 	
 --Q15
-/*[Bit Tougher] Return a table of those employee first_names shared by more than one 
- employee, together with a count of the number of times each first_name occurs. Omit employees
- without a stored first_name from the table. Order the table descending by count, and then 
- alphabetically by first_name.
-*/
 
 SELECT
 	first_name,
@@ -175,29 +171,6 @@ SELECT
  FROM employees AS e INNER JOIN dept_avg_sal
  ON e.id = dept_avg_sal.id
 
-SELECT 
-	id,
-	first_name,
-	last_name,
-	department,
-	salary,
-	fte_hours
-FROM employees 
-GROUP BY department 
-HAVING MAX(id)
-
-	SELECT 
-	salary / AVG(salary) AS salary_ratio 
-	FROM employees 
-	GROUP BY department, salary
-	
-	CAST(COUNT(id) AS REAL) AS grade_1,
-	ROUND(SUM(CAST(grade = 1 AS INTEGER))/CAST(COUNT(id) AS REAL)*100) AS proportion_of_grade_1
-	
-	(of employees in the largest department)
-	ratio employees salary to department avg salary
-	ratio employees fte_hours to department avg fte_hours
-	
 --Q18
 	
 SELECT
@@ -226,18 +199,13 @@ ORDER BY start_date ASC
 --Q20
 ---- Not got working ---- 
 SELECT 
-	DISTINCT COUNT(e.id),
-	e.first_name,
-	e.last_name,
-	e.email,
-	e.start_date,
 	CASE 
 		WHEN e.salary IS NULL THEN 'none'
 		WHEN e.salary < 40000 THEN 'low' 
 		WHEN e.salary >= 40000 THEN 'high'
-	END AS salary_class
-FROM employees AS e LEFT JOIN employees_committees AS ec 
+	END AS salary_class,
+ 	COUNT(DISTINCT(e.id)) AS num_committee_members
+FROM employees AS e INNER JOIN employees_committees AS ec 
 	ON e.id = ec.employee_id
-WHERE ec.committee_id = TRUE
 GROUP BY salary_class 
 
