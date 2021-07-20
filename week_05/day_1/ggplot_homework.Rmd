@@ -23,6 +23,11 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center", message = FALSE)
 
 QikBit is a start-up company producing low cost fitness trackers. Their flagship product, the KwikBit Unit1 (spot the mistake on the patent form) reproduces the functionality of the best-in-class commercial fitness trackers, but is cheap to make.  They are currently preparing to pitch to a potential investor and require a selection of charts to include in their presentation and promotional materials.
 
+
+```{r, echo=TRUE}
+col_scheme <- c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")
+```
+
 # Data
 
 The data for this assignment is provided in the `CodeClanData` package.
@@ -54,7 +59,7 @@ ggplot(qb_revenue_breakdown) +
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_fill_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+  scale_fill_manual(values = col_scheme)
 ```
 
 
@@ -65,14 +70,14 @@ kwitbit_sales <- qb_monthly_sales %>%
 filter(Cashflow == "Kwikbit Unit 1 Sales")
 
 ggplot(kwitbit_sales) + 
-  geom_line(aes(x = Date, y = Amount)) +
+  geom_line(aes(x = Date, y = Amount, colour = col_scheme[3]), size = 2) +
 labs(title = "\nKwikbit Monthly Sales 18/19\n") + 
   theme(panel.background = element_rect(fill = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")) 
+  scale_colour_manual(values = col_scheme)
 ```
 
 
@@ -85,15 +90,15 @@ kwitbit_cost <- qb_monthly_sales %>%
 filter(Cashflow == "Cost")
 
 ggplot() + 
-  geom_line(data = kwitbit_total_rev, aes(x = Date, y = Amount)) +
-  geom_line(data = kwitbit_cost, aes(x = Date, y = Amount)) +
+  geom_line(data = kwitbit_total_rev, aes(x = Date, y = Amount, colour = Cashflow, group = Cashflow), size = 2) +
+  geom_line(data = kwitbit_cost, aes(x = Date, y = Amount, colour = Cashflow, group = Cashflow), size = 2) +
 labs(title = "\nMonthly Revenue Vs Cost 18/19\n") + 
   theme(panel.background = element_rect(fill = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")) + 
+   scale_colour_manual(values = col_scheme) + 
   scale_y_continuous(breaks = c(1500, 1750, 2000, 2250, 2500, 2750, 3000), limits = c(1500, 3000))
 ```
 
@@ -102,14 +107,14 @@ labs(title = "\nMonthly Revenue Vs Cost 18/19\n") +
 
 ```{r}
 ggplot(qb_competitors) +
-  geom_area(aes(x = Year, y = Revenue)) +
+  geom_area(aes(x = Year, y = Revenue, fill = Company)) +
 labs(title = "\nAnnual Fitness Tracker Sales By Company (Last 5 years) \n") + 
   theme(panel.background = element_rect(fill = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_fill_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")) + 
+  scale_fill_manual(values = col_scheme) + 
   scale_y_continuous(labels = scales::comma)
 ```
 
@@ -117,7 +122,7 @@ labs(title = "\nAnnual Fitness Tracker Sales By Company (Last 5 years) \n") +
 
 ```{r}
 ggplot(qb_competitors) +
-  aes(x = Year, y = Revenue, group = Company) +
+  aes(x = Year, y = Revenue, colour = Company) +
   geom_line() +
   geom_point() +
 labs(title = "\nCompetitor Sales\n") + 
@@ -126,7 +131,7 @@ labs(title = "\nCompetitor Sales\n") +
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_brewer(palette = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+  scale_colour_manual(values = col_scheme)
 ```
 
 
@@ -134,18 +139,18 @@ labs(title = "\nCompetitor Sales\n") +
 
 ```{r}
 qb_device_data_clean <- qb_device_data %>% 
-  unite("hours_mins", hours:mins, sep = ".")
+  mutate(decimal_hour = hours + (mins/60))
 
 ggplot(qb_device_data_clean) +
-  geom_line(aes(x = hours_mins, y = counts, group = device)) +
-  facet_wrap(device ~ id) + 
+  geom_line(aes(x = decimal_hour, y = counts, colour = device, show.legend = FALSE)) +
+  facet_grid(id ~ device) + 
 labs(title = "\nKwitbit Step Count Vs Competitors\n") + 
   theme(panel.background = element_rect(fill = "white"),
         panel.grid.major = element_line(colour = "grey95"),
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+ scale_colour_manual(values = col_scheme)
 ```
 
 
