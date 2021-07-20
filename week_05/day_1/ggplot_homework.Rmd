@@ -72,7 +72,7 @@ labs(title = "\nKwikbit Monthly Sales 18/19\n") +
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")) 
 ```
 
 
@@ -93,7 +93,8 @@ labs(title = "\nMonthly Revenue Vs Cost 18/19\n") +
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")) + 
+  scale_y_continuous(breaks = c(1500, 1750, 2000, 2250, 2500, 2750, 3000), limits = c(1500, 3000))
 ```
 
 
@@ -108,7 +109,8 @@ labs(title = "\nAnnual Fitness Tracker Sales By Company (Last 5 years) \n") +
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_cf_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+  scale_fill_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")) + 
+  scale_y_continuous(labels = scales::comma)
 ```
 
 5. Now show the sales from the four competitors as a line graph. Include an extra layer that shows the data points used to make the lines.
@@ -124,7 +126,7 @@ labs(title = "\nCompetitor Sales\n") +
         text = element_text(size = 12),
         title = element_text(size = 14),
         axis.title = element_text(size = 11)) +
-  scale_colour_manual(values = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
+  scale_colour_brewer(palette = c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040"))
 ```
 
 
