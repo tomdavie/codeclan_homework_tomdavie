@@ -91,7 +91,7 @@ ggplot(backpack) +
 Is this relationship different between men and women? Choose an appropriate plot and interpret your findings. 
 
 ```{r}
-# Backpack weight increases more with body weighgt in females than males
+# Women generally weigh less. Backpack weight increases more with body weight in females than males
 
 ggplot(backpack) +
   aes(x = body_weight, y = backpack_weight, colour = sex) +
@@ -108,14 +108,13 @@ What **proportion** of students report back pain?
 # 32/100 have back problems
 
 ```{r}
-back_problems_ordered <- back_problems_ordered %>% 
-  mutate(back_problems = as.logical(back_problems))
+backpack_clean <- backpack %>% 
+  mutate(back_problems = recode(back_problems,
+                                "0" = "No",
+                                "1" = "Yes"))
 
-#back_problems_ordered <- backpack %>% 
- # arrange(back_problems)
-
-ggplot(back_problems_ordered, aes(x = "")) + 
-  geom_col(aes(y = length(back_problems)/100, fill = back_problems)) +
+ggplot(backpack_clean, aes(x = "")) + 
+  geom_col(aes(y = length(back_problems), fill = back_problems)) +
   coord_polar("y", start = 0) + 
     labs(title = "\nProportion of students who report back pain\n",
          y = "",
@@ -134,7 +133,7 @@ Is this proportion different between men and women?
 # There is a much higher percentage of back problems in women than men
 
 ```{r}
-ggplot(back_problems_ordered, aes(x = "")) + 
+ggplot(backpack_clean, aes(x = "")) + 
   geom_col(aes(y = length(back_problems)/100, fill = back_problems, sex)) +
   labs(x = "Sex",
        y = "Count",
@@ -152,12 +151,13 @@ Try both `backpack_weight` and `body_weight` as well as the `ratio`.
 
 ```{r}
 # This graph suggests if you have a high backpack weight to body weight ratio then you're far more likely to have back problems if you are women. 
-ggplot(back_problems_ordered) +
+ggplot(backpack_clean) +
   geom_col(aes(x = back_problems, y = ratio, fill = back_problems)) +
   facet_grid(~sex) +
   labs(x = "Back Problems",
        y = "Backpack Weight to Body Weight Ratio",
-       title = "\nThe Impact of Backpack Weight to Body Weight Ratio on Back Problems between the sexes\n",
+       title = "\nThe Impact of the Backpack Weight to Body Weight Ratio",
+       subtitle = "(against Back Problems between the sexes)",
        fill = "Do they have back problems?") 
 ```
 
