@@ -108,15 +108,19 @@ What **proportion** of students report back pain?
 # 32/100 have back problems
 
 ```{r}
-back_problems_ordered <- backpack %>% 
-  arrange(back_problems)
+back_problems_ordered <- back_problems_ordered %>% 
+  mutate(back_problems = as.logical(back_problems))
+
+#back_problems_ordered <- backpack %>% 
+ # arrange(back_problems)
 
 ggplot(back_problems_ordered, aes(x = "")) + 
-  geom_col(aes(y = length(back_problems)/100, fill = back_problems), show.legend = FALSE) +
+  geom_col(aes(y = length(back_problems)/100, fill = back_problems)) +
   coord_polar("y", start = 0) + 
     labs(title = "\nProportion of students who report back pain\n",
          y = "",
-         x = "") + 
+         x = "",
+       fill = "Do they have back problems?") + 
     theme(axis.title.x = element_blank(),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -127,14 +131,15 @@ ggplot(back_problems_ordered, aes(x = "")) +
 **Question 7.**  
 
 Is this proportion different between men and women? 
-# There is a much higher percentage of back problems in men than women
+# There is a much higher percentage of back problems in women than men
 
 ```{r}
 ggplot(back_problems_ordered, aes(x = "")) + 
-  geom_col(aes(y = length(back_problems)/100, fill = back_problems, sex), show.legend = FALSE) +
+  geom_col(aes(y = length(back_problems)/100, fill = back_problems, sex)) +
   labs(x = "Sex",
        y = "Count",
-       title = "Proportion of back problems between men and women")
+       title = "Proportion of back problems between men and women",
+       fill = "Do they have back problems?")
 ```
 
 **Question 8.**  
@@ -146,13 +151,14 @@ Try both `backpack_weight` and `body_weight` as well as the `ratio`.
 *Hint: faceting would be useful here*.   
 
 ```{r}
-# This graph suggests if you have a high backpack weight to body weight ratio then you're far more likely to have back problems if you are male. This is true in females but far less significant. 
-ggplot(backpack) +
-  geom_col(aes(x = back_problems, y = ratio, fill = back_problems), show.legend = FALSE) +
+# This graph suggests if you have a high backpack weight to body weight ratio then you're far more likely to have back problems if you are women. 
+ggplot(back_problems_ordered) +
+  geom_col(aes(x = back_problems, y = ratio, fill = back_problems)) +
   facet_grid(~sex) +
   labs(x = "Back Problems",
        y = "Backpack Weight to Body Weight Ratio",
-       title = "\nThe Impact of Backpack Weight to Body Weight Ratio on Back Problems between the sexes\n")
+       title = "\nThe Impact of Backpack Weight to Body Weight Ratio on Back Problems between the sexes\n",
+       fill = "Do they have back problems?") 
 ```
 
 # Extensions
