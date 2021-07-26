@@ -130,16 +130,17 @@ server <- function(input, output) {
         game_sales_filtered() %>% 
             slice_max(sales, n = 10) %>% 
             ggplot() +
-            aes(x = name, y = user_score, size = critic_score, colour = sales) +
-            geom_point() +
-            scale_size(range = c(2, 15)) +
+            geom_point(aes(x = name, y = sales, colour = user_score, size = critic_score), alpha = 0.7) +
+            scale_size(range = c(3, 12)) +
             scale_color_viridis(discrete = FALSE) +
             theme_ipsum() +
             theme(axis.text.x = element_text(size = 10, angle = 45),
                   axis.text.y = element_text(size = 10),
-                  axis.title = element_text(size = 15)) +
+                  axis.title.x = element_text(size = 15),
+                  axis.title.y = element_text(size = 15)) +
             labs(x = "Game Name", 
-                 y = "User Score")
+                 y = "Sales",
+                 colour = "User Score")
             
     })
     
