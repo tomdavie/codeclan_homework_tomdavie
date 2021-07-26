@@ -8,46 +8,40 @@ olympics_overall_medals <- olympics_overall_medals
 
 # UI ----------------------------------------------------------------------
 
-
-
 ui <- fluidPage(
+    
     theme = shinytheme("sandstone"),
     titlePanel(tags$h1("Five Country Medal Comparison")),
     
-    fluidRow(
+    tabsetPanel(
         
-        mainPanel(plotOutput("medal_plot"))),
+        tabPanel("Plot", plotOutput("medal_plot")
+        ),
         
-        #tabsetPanel,
-        #    tabPanel("Extra info", verbatimTextOutput("extra text")),
-        
-    
-        
-    fluidRow(
-        column(4,
-               wellPanel(
-                   radioButtons(inputId = "season_input",
-                                "Which season",
-                                choices = c("Summer", "Winter"))
-               )),
-        
-        column(4, 
-               wellPanel(
-                   radioButtons(inputId = "medal_input",
-                                "Which medal?",
-                                choices = c("Gold", "Silver", "Bronze"))
-               )),
-        
-        tabsetPanel(
         tabPanel(tags$b("More info"), "Some text"
-                 ),
+        ),
         
         tabPanel(tags$b("Website"), "Some different text"
-                 )
-    
         )
+    ),
+    
+    column(4,
+           wellPanel(
+               radioButtons(inputId = "season_input",
+                            "Which season",
+                            choices = c("Summer", "Winter"))
+           )
+    ),
+    
+    column(4, 
+           wellPanel(
+               radioButtons(inputId = "medal_input",
+                            "Which medal?",
+                            choices = c("Gold", "Silver", "Bronze"))
+           )
     )
 )
+
 
 # Server ------------------------------------------------------------------
 
