@@ -53,7 +53,8 @@ titanic <- read_csv("data/titanic.csv")
 titanic <- titanic %>% 
   mutate(crew = 
   case_when(fare == 0 ~ TRUE,
-            fare > 0 ~ FALSE)
+            fare > 0 ~ FALSE,
+            NA ~ TRUE)
   )
 ```
 
@@ -89,9 +90,11 @@ Today was pretty full-on! Here are some problems to help you consolidate what yo
 1. If I roll a six-sided dice once, what is the probability of getting a number less than 5?
 
 ```{r}
-six_sided_dice <- rolldie(1) %>% 
-  filter(X1 < 5) %>% 
-  summarise(p = n()/nrow(six_sided_dice))
+s <- rolldie(1)
+six_sided_dice <- s %>% 
+  filter(X1 < 5)
+
+p <-  nrow(six_sided_dice)/nrow(s)
 ```
 
 
