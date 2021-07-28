@@ -65,6 +65,12 @@ mobile_phones_samsung <- mobile_phones %>%
 ```
 
 ```{r}
+mobile_phones <- mobile_phones %>% 
+  filter(brand == "Samsung")
+```
+
+
+```{r}
 #Broadly normal distribution fits points though some outliers
 
 mobile_phones %>% 
@@ -91,20 +97,6 @@ We can be more quantitative in comparing the distribution of top brand ratings w
 <summary>**Hint**</summary>
 You can use a `filter()` to get only the ratings within one-, two- and three standard deviations of the mean, and then think about how to calculate what proportion each of these filtered sets make of the total number of ratings. You'll need to use three separate `filter()` and `summarise()` pipes to do this.
 </details>
-
-```{r}
-samsung_ratings <- mobile_phones %>% 
-  filter(brand == "Samsung") %>% 
-  mutate(z_samsung = scale(rating))
-
-samsung_ratings
-```
-
-
-```{r}
-samsung_ratings %>% 
-  filter(!between(z_samsung, left = -3, right = 3))
-```
 
 <details>
 <summary>**Further hint - code to filter within one SD**</summary>
