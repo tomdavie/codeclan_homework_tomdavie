@@ -1,0 +1,117 @@
+---
+title: "NYC Bike Report"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(tsibbledata)
+library(tsibble)
+library(feasts)
+library(fable)
+nyc_bikes_df <- nyc_bikes
+```
+
+In your report, please consider the following questions:
+
+What is the pattern of bike hires over time (e.g. within a year, month, week, or day)?
+
+```{r}
+nyc_bikes_df <- nyc_bikes_df %>% 
+  mutate(date = date(start_time),
+         day = day(start_time),
+         week = week(start_time),
+         month = month(start_time, label = TRUE), 
+         year = year(start_time))
+```
+
+```{r}
+nyc_bikes_year <- nyc_bikes_df %>% 
+  index_by(year) %>% 
+  summarise(num_hires = n())
+```
+
+```{r}
+ggplot(nyc_bikes_year) + 
+  aes(x = year, y = num_hires) + 
+  geom_line(group = 1) +
+  geom_point()
+```
+
+```{r}
+nyc_bikes_month <- nyc_bikes_df %>% 
+  index_by(month) %>% 
+  summarise(num_hires = n())
+```
+
+```{r}
+ggplot(nyc_bikes_month) + 
+  aes(x = month, y = num_hires) + 
+  geom_line(group = 1) +
+  geom_point()
+```
+
+```{r}
+nyc_bikes_week <- nyc_bikes_df %>% 
+  index_by(week = week(date)) %>% 
+  summarise(num_hires = n())
+```
+
+```{r}
+ggplot(nyc_bikes_week) + 
+  aes(x = week, y = num_hires) + 
+  geom_line(group = 1) +
+  geom_point()
+```
+
+
+```{r}
+nyc_bikes_day <- nyc_bikes_df %>% 
+  index_by(day = day(date)) %>% 
+  summarise(num_hires = n())
+```
+
+```{r}
+ggplot(nyc_bikes_day) + 
+  aes(x = day, y = num_hires) + 
+  geom_line(group = 1) +
+  geom_point()
+```
+
+Do bike hire patterns differ between bike rider demographics? (e.g. gender, type of trip, age)
+
+```{r}
+index_var(nyc_bikes_df)
+```
+
+```{r}
+key_vars(nyc_bikes_df)
+```
+
+```{r}
+nyc_bikes_df <- nyc_bikes_df %>% 
+  mutate(age = year(today()) - birth_year,
+        gender = recode(gender, "Unknown" = NA_character_))
+```
+
+```{r}
+nyc_bikes_df_gender <- nyc_bikes_df %>% 
+  index_by(day) %>% 
+  summarise(num_hires = n())
+```
+
+```{r}
+nyc_bikes_df_gender %>% 
+  ggplot() + 
+  aes(x = date, y = num_hires, fill = gender) +
+  geom_line()
+```
+
+
+Any other insights?
+
+```{r}
+
+```
+

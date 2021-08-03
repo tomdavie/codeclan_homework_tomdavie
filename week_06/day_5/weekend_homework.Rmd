@@ -95,12 +95,12 @@ A method comparing two versions of a web page, email, flyer or other marketing d
 <br><br>
 You selected five days at random last month and then randomly selected $200$ of each sampled day's users into group $A$ and another $200$ of that day's users into group $B$. Group $A$ continued to be shown the banner at the right hand side of the webpage (its usual position) while group $B$ was shown the banner at the top of the page. You monitored each sampled user's interactions with the website, in particular the 'click through rate' (CTR) on the banner, i.e. what proportion of sampled users clicked on the banner. You want to use the sampled data to test the hypothesis that website users overall are more likely to click on the banner if positioned at the top of the page  
 
-Test - Two sample proportion - independent samples
+Test - Two sample proportion
 H0: πpropA - πpropB = 0
 HA: πpropA - πpropB < 0
 Null hypothesis is that there is no different between prop A and B. Alternative 
 hypothesis is that prop A - prop B is less than zero.
-Method to generate null distribution - Bootstrap
+Method to generate null distribution - Permutation
 
 <br>
 
@@ -110,7 +110,7 @@ Test - One sample mean
 H0: µpart = 145
 HA: µpart != 145
 Null hypothesis is that the mean width of parts is 145mm. Alternative hypothesis
-is that mean widoth of parts isn't 145mm
+is that mean width of parts isn't 145mm
 Method to generate null distribution - Bootstrap
 
 ## Hypothesis Testing - Interpreting the results
