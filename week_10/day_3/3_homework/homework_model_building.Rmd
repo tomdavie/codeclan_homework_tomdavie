@@ -131,7 +131,7 @@ house_tidy_remaining_resid <- houses_tidy %>%
   select(-c("price", "sqft_living"))
 
 house_tidy_remaining_resid %>% 
-ggpairs(aes(colour = waterfront, alpha = 0.5))
+ggpairs()
 ```
 
 ```{r}
