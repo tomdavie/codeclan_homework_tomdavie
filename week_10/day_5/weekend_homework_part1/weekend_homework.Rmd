@@ -1,0 +1,157 @@
+---
+title: "Weekend Homework - Model Building"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    css: ../../../styles.css
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = 'center')
+```
+
+# MVP
+
+We've looked at a few different ways in which we can build models this week, including how to prepare them properly. This weekend we'll build a multiple linear regression model on a dataset which will need some preparation. The data can be found in the data folder, along with a data dictionary
+
+We want to investigate the avocado_trim dataset, and, in particular, to model the `AveragePrice` of the avocado_trims. Use the tools we've worked with this week in order to prepare your dataset and find appropriate predictors. Once you've built your model use the validation techniques discussed on Wednesday to evaluate it. Feel free to focus either on building an *explanatory* or a *predictive* model, or both if you are feeling energetic!
+
+As part of the MVP we want you not to just run the code but also have a go at **interpreting the results** and write your thinking in comments in your script.
+
+**Hints and tips**
+
+* `region` may lead to many dummy variables. Think carefully about whether to include this variable or not (there is no one 'right' answer to this!)
+* Think about whether each variable is *categorical* or *numerical*. If categorical, make sure that the variable is represented as a factor.
+* We will not treat this data as a time series, so `Date` will not be needed in your models, but can you extract any useful features out of `Date` before you discard it?
+* If you want to build a predictive model, consider using either `leaps` or `glmulti` to help with this.
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(fastDummies)
+library(ggfortify)
+library(modelr)
+library(leaps)
+library(caret)
+```
+
+```{r}
+# Loading data
+avocado <- read.csv("data/avocado.csv") 
+
+#Tidy up
+avocado_trim <- avocado %>% 
+  mutate(month = month(Date), # Remove month from Date column
+         year = as.factor(year), # Set year as a factor
+         month = as.factor(month)) %>%  # Set month as a factor
+  select(-c("X", "Date")) %>% # Remove unneeded columns
+  # Create dummy columns for region and type 
+  dummy_cols(select_columns = "region", remove_first_dummy = TRUE, remove_selected_columns = TRUE) %>% 
+  dummy_cols(select_columns = "type", remove_first_dummy = TRUE, remove_selected_columns = TRUE) 
+  
+```
+
+```{r}
+# Checked for any variables with relationships. Date and year did. Removed month from Date then removed Date (above)
+alias(lm(AveragePrice ~ ., avocado_trim))
+```
+
+```{r}
+# Created forward model selection
+regsubsets_forward <- regsubsets(AveragePrice ~ ., data = avocado_trim, nvmax = 20, method = "forward")
+```
+
+```{r}
+# Looked at the summary
+sum_regsubsets_forward <- summary(regsubsets_forward)
+sum_regsubsets_forward
+```
+
+```{r}
+sum_regsubsets_forward$which
+```
+
+```{r}
+# Looked at adjusted r 2 to see which variables to include
+plot(regsubsets_forward, scale = "adjr2")
+```
+
+```{r}
+# Looked at bic to see which variables to include
+plot(regsubsets_forward, scale = "bic")
+```
+
+```{r}
+# Plotted to find the 'elbow' to see how many variable to use. Unfortunately isn't a clear one in this data
+plot(sum_regsubsets_forward$rsq, type = "b")
+```
+
+```{r}
+# Plotted to find the 'elbow' to see how many variable to use. Unfortunately isn't a clear one in this data
+plot(sum_regsubsets_forward$bic, type = "b")
+```
+
+```{r}
+# Began building the model using the above insights
+model_1 <- lm(AveragePrice ~ type_organic, data = avocado_trim)
+summary(model_1)
+```
+
+```{r}
+# Checking the plots. Looking great here.
+autoplot(model_1)
+```
+
+```{r}
+# Adding another variable
+model_2 <- lm(AveragePrice ~ type_organic + year, data = avocado_trim)
+summary(model_2)
+```
+
+```{r}
+# Sitll looking going. Tails coming off in the Normal Q-Q a little. Slight bend in the Scale-Location line. Still looing great. 
+autoplot(model_2)
+```
+
+```{r}
+# Ran an anova to check significance. *** ideal
+anova(model_1, model_2)
+```
+
+```{r}
+# Added another. Adj R Squared isn't increasing that much now. 
+model_3 <- lm(AveragePrice ~ type_organic + year + region_HartfordSpringfield, data = avocado_trim)
+summary(model_3)
+```
+
+```{r}
+# The Scale-Location isn't looking great now but still probably ok to use.
+autoplot(model_3)
+```
+
+```{r}
+# Checked significant. Still fine.
+anova(model_2, model_3)
+```
+
+```{r}
+# Added another variable. Small adj r 2 increase.
+model_4 <- lm(AveragePrice ~ type_organic + year + region_HartfordSpringfield + region_SanFrancisco, data = avocado_trim)
+summary(model_4)
+```
+
+```{r}
+# Scale-Location not looking great. I'd probably end the model here.
+autoplot(model_4)
+```
+
+```{r}
+# Still significant.
+anova(model_3, model_4)
+```
+
+With there being no clear 'elbow' in the data on the plots we ran it's hard to know when to clearly stop building on this model and when overfitting happens. I'd say model 3 or 4 are fine but model 2 looked best. 
