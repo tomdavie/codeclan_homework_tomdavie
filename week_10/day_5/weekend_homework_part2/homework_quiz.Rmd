@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 1. I want to predict how well 6 year-olds are going to do in their final school exams. Using the following variables am I likely under-fitting, fitting well or over-fitting? Postcode, gender, reading level, score in maths test, date of birth, family income.
 
-Over-fitting as there are 6 variables and likely that'll be 
+Over-fitting as there are 6 variables which is probably too specific to these children and may not work for other children. 
 
 2. If I have two models, one with an AIC score of 34,902 and the other with an AIC score of 33,559 which model should I use?
 
@@ -30,20 +30,21 @@ You should go for the higher adjusted r-squared so model 1 as this takes into ac
 
 4. I have a model with the following errors: RMSE error on test set: 10.3, RMSE error on training data: 10.4. Do you think this model is over-fitting?
 
-
+No. As over-fitting is indicated when the training RMSE error is smaller than the test set. 
 
 5. How does k-fold validation work?
 
+This is when you only have a relatively small dataset and want to test your model works. Therefore, you split your model up into a k folds. Usually 5 or 10. You typically then take 20% of your k as a test set to test your model and 80% to traim your model against.
 
 6. What is a validation set? When do you need one?
 
+A validation dataset is an additional set of data beyond train/test. This is needed if you have a particularly complex model building process as you may have overfitting and the test model will be part of that. 
 
 7. Describe how backwards selection works.
 
+It puts all predictors into the model and removes the one by one to test what works best. 
 
 8. Describe how best subset selection works.
 
-
-
-
+This is using 'exhaustive' selection. With forward and backward selection once a predictor is put in / removed it cannot be reintroduced. It can in exhaustive and thus, this looks at all possible combination to bring together the best model
 
