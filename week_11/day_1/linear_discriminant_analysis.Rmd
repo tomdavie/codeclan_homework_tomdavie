@@ -24,7 +24,7 @@ A form of classification is Linear Discriminant Analysis.
 
 ### Linear Discriminant Analysis (LDA)
 
-Logistic regression is a classification algorithm traditionally limited to only two-class classification problems. Whereas, if you have more than two classes then Linear Discriminant Analysis is the preferred linear classification technique. It separates 2 or more classes and models the group-differences in groups by projecting the spaces in a higher dimension into space with a lower dimension.
+Logistic regression is a classification algorithm traditionally limited to only two-class classification problems. Whereas, if you have more than two classes then Linear Discriminant Analysis is the preferred linear classification technique. It separates 2 or more classes and models the group-differences in groups by reducing the number of dimensions.
 
 **Consider a situation where you have plotted the relationship between two variables where each color represents a different class. One is shown with a red color and the other with blue**
 
