@@ -63,7 +63,6 @@ LDA is used in face recognition to reduce the number of attributes to a more man
 ###### Medical 
 You can use LDA to classify the patient disease as mild, moderate or severe. The classification is done upon the various parameters of the patient and their medical trajectory. 
 
-
 <br>
 
 <br>
