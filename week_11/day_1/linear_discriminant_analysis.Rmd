@@ -61,7 +61,7 @@ Logistic regression is a classification algorithm traditionally limited to only 
 LDA is used in face recognition to reduce the number of attributes to a more manageable number before the actual classification. The dimensions that are generated are a linear combination of pixels that forms a template. These are called Fisher’s faces.
 
 ###### Medical 
-You can use LDA to classify the patient disease as mild, moderate or severe. The classification is done upon the various parameters of the patient and his medical trajectory. 
+You can use LDA to classify the patient disease as mild, moderate or severe. The classification is done upon the various parameters of the patient and their medical trajectory. 
 
 
 <br>
