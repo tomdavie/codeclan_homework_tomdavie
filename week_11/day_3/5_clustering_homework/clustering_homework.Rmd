@@ -1,0 +1,145 @@
+---
+title: "Clustering homework"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+* You have been provided some customer data from a shopping centre. Do some exploratory analysis on the data. Comment on findings. 
+
+* We are interested in creating a marketing campaign to target customers based on their spending score and annual income. Perform a k-means clustering to find if there are meaningful clusters in the data to target the customers. 
+
+* Perform k-means clustering and chose a value of k.
+
+* Visualise the clustering for your chosen value of k.
+
+* Do you think the clustering seems a good fit for this data?
+
+* Comment on the attributes on one or two of the clusters (maybe even give them a label if you like - like in section 4.1 of the 'Segmentation & clustering intro' lesson). 
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(GGally)
+```
+
+```{r}
+mall_customers <- read_csv("data/mall_customers.csv") %>% 
+  clean_names() %>% 
+  select(-customer_id)
+```
+
+```{r}
+# No NAs
+any(is.na(mall_customers))
+```
+
+```{r}
+mall_customers %>% 
+  ggpairs()
+```
+
+```{r}
+mall_customers_trim <- mall_customers %>% 
+  select(annual_income_k, spending_score_1_100)
+```
+
+```{r}
+# Looks like there are 5 clusters but shall we see...
+ggplot(mall_customers_trim) +
+  aes(x = annual_income_k, y = spending_score_1_100) +
+  geom_point() 
+```
+
+```{r}
+mall_customers_scale <- mall_customers_trim %>% 
+  mutate_if(is_numeric, scale)
+```
+
+```{r}
+cluster_mall <- kmeans(mall_customers_scale, 
+                      centers = 8, 
+                      nstart = 25)
+```
+
+```{r}
+library(broom)
+
+tidy(cluster_mall,
+     col.names = colnames(mall_customers_scale))
+
+augment(cluster_mall, mall_customers)
+```
+
+```{r}
+glance(cluster_mall)
+```
+
+```{r}
+max_k <- 20 
+
+k_clusters <- tibble(k = 1:max_k) %>%
+  mutate(
+    kclust = map(k, ~ kmeans(mall_customers_scale, .x, nstart = 25)), 
+    tidied = map(kclust, tidy),
+    glanced = map(kclust, glance),
+    augmented = map(kclust, augment, mall_customers)
+  )
+
+k_clusters %>% 
+  unnest(glanced)
+```
+
+```{r}
+clusterings <- k_clusters %>% 
+  unnest(glanced) 
+
+clusterings 
+```
+
+```{r}
+# Looks like the elbow is at 5
+ggplot(clusterings) +
+  aes(x = k, y = tot.withinss) +
+  geom_point() +
+  geom_line() + 
+  scale_x_continuous(breaks = seq(1,20, by = 1))
+```
+
+```{r}
+# 5 clusters appears to be right
+library(factoextra)
+fviz_nbclust(mall_customers_scale, 
+             kmeans,
+             method = "silhouette", 
+             nstart = 25)
+```
+
+```{r}
+# Appears to say 1 cluster here but I think we can conclude from above that we'll go with 5
+fviz_nbclust(mall_customers_scale, 
+             kmeans,
+             method = "gap_stat", 
+             nstart = 25)
+```
+
+```{r}
+# 5 appears to fit well
+clusterings %>% 
+  unnest(cols = c(augmented)) %>% 
+  filter(k == 5) %>% 
+  ggplot() + 
+   aes(x = annual_income_k, y = spending_score_1_100, colour = .cluster) +
+  geom_point(aes(color = .cluster)) 
+  #geom_text(aes(label = .cluster)) 
+```
+
+You could label: 
+1 - High rollers
+2 - Middle Class 
+3 - Frugal folks
+4 - Sensible low-income sues 
+5 - Credit card bandits 

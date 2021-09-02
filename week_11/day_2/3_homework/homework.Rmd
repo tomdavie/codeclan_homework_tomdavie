@@ -188,6 +188,22 @@ conf_mat
 ```
 **This tells us that 161 out of 202 predictions were correct. We had 14 False Positives and 27 True Negatives.**
 
+```{r}
+titanic_test_pred %>%
+  accuracy(truth = survived_flag, estimate = pred)
+```
+
+```{r}
+titanic_test_pred %>%
+  yardstick::sensitivity(truth = survived_flag, estimate = pred)
+```
+
+```{r}
+titanic_test_pred %>%
+  yardstick::specificity(truth = survived_flag, estimate = pred)
+```
+
+
 # Extension  
 
 See how a `ranger()` random forest classifier compares with a single decision tree in terms of performance. Can you tune the values of the `mtry`, `splitrule` and `min.node.size` hyperparameters? Which variables in the dataset turn out to be most important for your best model? The `Kappa` metric might be the best one to focus on if you want to improve performance for an imbalanced data set. Do some research on the definition of `Kappa` before you start.
