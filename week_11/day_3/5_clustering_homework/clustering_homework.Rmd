@@ -143,3 +143,59 @@ You could label:
 3 - Frugal folks
 4 - Sensible low-income sues 
 5 - Credit card bandits 
+
+```{r}
+# 5 appears to fit well
+k5 <- clusterings %>% 
+  unnest(cols = c(augmented)) %>% 
+  filter(k == 5)
+
+# get cluster info for centres
+k5clust <- k5 %>% 
+  select(kclust) %>% 
+  pull()
+```
+
+
+```{r}
+# notice how the centres are fit to the scaled data
+k5clust[[1]]$centers
+```
+
+
+```{r}
+# define function to remove scaling
+remove_center_scaling <- function(centre_mat, scaled_df) {
+  vars <- colnames(centre_mat)
+  
+  unscaled_centres <- sapply(
+    vars,
+    function(x) centre_mat[, x] * attr(scaled_df[[x]], 'scaled:scale') +
+      attr(scaled_df[[x]], 'scaled:center'))
+  
+  return(as_tibble(unscaled_centres))
+}
+```
+
+```{r}
+# call function. remove scaling from centroids
+unscaled_centres <- remove_center_scaling(
+  k5clust[[1]]$centers, mall_customers_scale
+  )
+```
+
+```{r}
+ggplot(k5) + 
+  geom_point(aes(x = annual_income_k, y = spending_score_1_100,
+                 colour = .cluster)) +
+    geom_text(data = unscaled_centres,
+              aes(x = .data[["annual_income_k"]],
+                  y = .data[["spending_score_1_100"]]),
+              color = "black", size = 4, label = 1:5) +
+  stat_ellipse(data = k5,
+               aes(x = annual_income_k, y = spending_score_1_100,
+                   colour = .cluster, fill = .cluster),
+               geom = "polygon", alpha = 0.1) + 
+  labs(x = "Annual Income",
+       y = "Spending Score")
+```
