@@ -29,6 +29,8 @@ library(glmulti)
 library(fastDummies)
 library(GGally)
 library(caret)
+library(pROC)
+library(modelr)
 ```
 
 ```{r}
@@ -143,4 +145,20 @@ glmulti_ga_search_with_pairs_aic <- glmulti(
 summary(glmulti_ga_search_with_pairs_aic)
 ```
 
+
+```{r}
+model <- glm(
+  purchase_MM ~ loyal_ch + sale_price_mm + sale_price_ch,
+  data = train,
+  family = binomial(link = "logit")
+)
+
+roc <- train %>%
+  add_predictions(model, type = "response") %>%
+  roc(response = purchase_MM, predictor = pred)
+```
+
+```{r}
+auc(roc)
+```
 
